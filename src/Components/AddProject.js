@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import uuid from 'uuid';
+
 
 class AddProject extends Component {
   constructor(){
@@ -13,7 +15,20 @@ static defaultProps = {
 }
 
 handleSubmit(e){
-  console.log(this.refs.title.value)
+  if(this.refs.title.value === ''){
+    alert('title is required')
+  } else {
+    this.setState({newProject: {
+      id: uuid.v4(),
+      title: this.refs.title.value,
+      category: this.refs.category.value
+    }}, function () {
+      // console.log(this.state)
+      // because state is different in each component
+      // we want to send the data from form through props
+      this.props.addProject(this.state.newProject);
+    });
+  }
   e.preventDefault();
 }
 
