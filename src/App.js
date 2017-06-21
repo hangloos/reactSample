@@ -1,38 +1,64 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
-
+import $ from 'jquery'
 import './App.css';
 import Projects from './Components/Projects';
-import AddProject from './Components/AddProject'
+import AddProject from './Components/AddProject';
+import Todos from './Components/Todos';
 
 class App extends Component {
 
   constructor() {
     super()
     this.state = {
-      projects: []
+      projects: [],
+      todos: []
     }
   }
 
+getTodos(){
+  $.ajax({
+    url: 'https://jsonplaceholder.typicode.com/todos',
+    dataType: 'json',
+    cache: false,
+    success: function(data){
+      this.setState({todos: data}, function(){
+        console.log(this.state);
+      })
+    }.bind(this),
+    error: function(xhr, status, err){
+      console.log(err)
+    }
+  });
+}
+
+getProjects(){
+  this.setState({
+    projects: [
+      {
+        id:uuid.v4(),
+        title: 'Business Website',
+        category: 'Web Design'
+      },
+      {id:uuid.v4(),title: 'Social App',
+      category: 'Mobile Dev'
+      },
+      {id:uuid.v4(),title: 'Ecommerce Cart',
+      category: 'Web Dev'
+      }
+    ]
+  })
+}
 // **lifecycle method taht shold be used to fetch the data from
 // example an ajax call or however retrieve it
 // the rest of them are in documentation. lifecycle methods
   componentWillMount(){
-    this.setState({
-      projects: [
-        {
-          id:uuid.v4(),
-          title: 'Business Website',
-          category: 'Web Design'
-        },
-        {id:uuid.v4(),title: 'Social App',
-        category: 'Mobile Dev'
-        },
-        {id:uuid.v4(),title: 'Ecommerce Cart',
-        category: 'Web Dev'
-        }
-      ]
-    })
+    this.getProjects();
+    this.getTodos();
+  }
+
+  componentDidMount(){
+    this.getTodos();
   }
 
 
@@ -60,9 +86,16 @@ handleDeleteProject(id) {
       <div className="App">
       <AddProject addProject={this.handleAddProject.bind(this)}/>
       <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)}/>
+      <hr/>
+      <Todos todos = {this.state.todos}/>
       </div>
     );
   }
+}
+
+Projects.propTypes = {
+  projects: React.PropTypes.array,
+  onDelete: React.PropTypes.func
 }
 
 export default App;

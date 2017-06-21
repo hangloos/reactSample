@@ -23,7 +23,6 @@ handleSubmit(e){
       title: this.refs.title.value,
       category: this.refs.category.value
     }}, function () {
-      // console.log(this.state)
       // because state is different in each component
       // we want to send the data from form through props
       this.props.addProject(this.state.newProject);
@@ -54,5 +53,11 @@ handleSubmit(e){
     );
   }
 }
+
+AddProject.propTypes = {
+  categories: React.PropTypes.array,
+  addProject: React.PropTypes.func
+}
+
 
 export default AddProject;
